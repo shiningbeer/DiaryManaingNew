@@ -107,6 +107,7 @@ export default class PluginList extends PureComponent {
       name: 'file',
       multiple: true,
       action: 'http://localhost:1978/plugin/add',
+      headers:{'token':localStorage.getItem('token')},
       onChange(info) {
         const status = info.file.status;
         if (status !== 'uploading') {

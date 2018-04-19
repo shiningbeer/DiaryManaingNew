@@ -81,7 +81,7 @@ export const node={
     body:params
   }),
   
-  getToken:async (url,params)=>myRequest(url+'/auth', {
+  getToken:async (url,params)=>myRequest(url+'/user/gettoken', {
     method: 'POST',
     body:params
   }),
