@@ -49,6 +49,22 @@ export default {
         payload:{},
       });
     }, 
+    *resume({taskId}, { call, put }) {
+      const re =yield call(task.resume,{taskId});
+      re=='ok'?message.success('继续任务成功'):message.warning('继续任务失败')
+      yield put({
+        type: 'get',
+        payload:{},
+      });
+    }, 
+    *pause({taskId}, { call, put }) {
+      const re =yield call(task.pause,{taskId});
+      re=='ok'?message.success('成功暂停任务'):message.warning('暂停任务失败')
+      yield put({
+        type: 'get',
+        payload:{},
+      });
+    }, 
 
     
   },

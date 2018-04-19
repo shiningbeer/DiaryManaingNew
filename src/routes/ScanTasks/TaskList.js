@@ -134,7 +134,7 @@ class TaskList extends PureComponent {
         onCancel() {},
       });
     }
-    const ListContent = ({ data: { user, beginAt, percent, status }}) => {
+    const ListContent = ({ data: { user, createdAt, percent, status }}) => {
       let pstatus,sstatus
       switch(status){
         case -1:
@@ -169,8 +169,8 @@ class TaskList extends PureComponent {
         </div>
         
         <div className={styles.listContentItem}>
-          <span>开始时间</span>
-          <p>{moment(beginAt).format('YYYY-MM-DD HH:mm')}</p>
+          <span>创建时间</span>
+          <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
         </div>
         <div className={styles.listContentItem}>
           <Progress percent={percent} status={pstatus} strokeWidth={6} style={{ width: 120 }} />
@@ -262,12 +262,16 @@ class TaskList extends PureComponent {
                           this.setState({modalVisible:true,selectedTask:{id:item._id,targetList:item.targetList}})
                           dispatch({type:'node/get'})
                         }
+                        else if (item.status==1){
+                          dispatch({type:'task/resume',taskId:item._id})
+                        }
                     }}
                       />:
                     <FaPauseCircle 
                       style={{fontSize:playBtnOutLook(index).size,color:playBtnOutLook(index).color}}
                       onMouseEnter={()=> this.setState( {mouseOverPlayBtnIndex:index})}                      
                       onMouseLeave={()=> this.setState( {mouseOverPlayBtnIndex:-1})}
+                      onClick={()=>{dispatch({type:'task/pause',taskId:item._id})}}
                     />}
                     <FaTrashO 
                       style={{fontSize:delBtnOutLook(index).size,color:delBtnOutLook(index).color}}

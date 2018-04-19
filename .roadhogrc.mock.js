@@ -98,7 +98,7 @@ const proxy = {
         _id: 'xxx1',
         name: '米之比爱杀耐特',
         description: '',
-        beginAt: new Date(),
+        createdAt: new Date(),
         user:'ppp',
         percent:2,
         status:'exception'
@@ -107,7 +107,7 @@ const proxy = {
         _id: 'xxx1',
         name: '引猛之爱死七',
         description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
-        beginAt: new Date('2017-07-24'),   
+        createdAt: new Date('2017-07-24'),   
         user:'aaa',     
         percent:40,
         status:'normal'
@@ -116,7 +116,7 @@ const proxy = {
         _id: 'xxx1',
         name: '太被之奥尔',
         description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
-        beginAt: new Date(),
+        createdAt: new Date(),
         user:'ppp',
         percent:90,
         status:'normal'
@@ -125,7 +125,7 @@ const proxy = {
         _id: 'xxx1',
         name: '太高之奥尔',
         description: '那时候我只会想自己想要什么，从不想自己拥有什么',
-        beginAt: new Date('2017-07-23'),
+        createdAt: new Date('2017-07-23'),
         user:'ppp',
         percent:88,
         status:'normal'
@@ -134,7 +134,7 @@ const proxy = {
         _id: 'xxx1',
         name: '引之奥尔',
         description: '凛冬将至',
-        beginAt: new Date('2017-07-23'),
+        createdAt: new Date('2017-07-23'),
         user:'ppp',
         percent:100,
         status:'success'
@@ -143,7 +143,7 @@ const proxy = {
         _id: 'xxx1',
         name: '月亮之比爱斯耐特',
         description: '生命就像一盒巧克力，结果往往出人意料',
-        beginAt: new Date('2017-07-23'),
+        createdAt: new Date('2017-07-23'),
         user:'ppp',
         percent:77,
         status:'exception'

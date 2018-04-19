@@ -130,6 +130,14 @@ export const task={
     method: 'POST',
     body:params
   }),
+  resume:async (params)=>request(urlbase+'/task/resume', {
+    method: 'POST',
+    body:params
+  }),
+  pause:async (params)=>request(urlbase+'/task/pause', {
+    method: 'POST',
+    body:params
+  }),
 }
 
 
