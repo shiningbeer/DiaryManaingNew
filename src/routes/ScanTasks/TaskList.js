@@ -134,33 +134,50 @@ class TaskList extends PureComponent {
         onCancel() {},
       });
     }
-    const ListContent = ({ data: { user, createdAt, percent, status }}) => {
+    
+    const OPER_STATUS = {
+      new: 0,
+      complete:1,
+      implement: 2,
+      paused:-1,
+    }
+  const IMPL_STATUS={
+    wrong:-1,
+    complete:1,
+    normal:0
+  }    
+    const ListContent = ({ data: { user, createdAt, percent, operStatus,implStatus }}) => {
       let pstatus,sstatus
-      switch(status){
-        case -1:
-          pstatus='exception'
-          sstatus='出错了'
-          break
-        case 0:
-          pstatus='normal'
-          sstatus='未开始'
-          break
-        case 1:
-          pstatus='normal'
+      switch(operStatus){
+        case OPER_STATUS.paused:
           sstatus='暂停中'
           break
-        case 2:
-          pstatus='normal'
-          sstatus='进行中'
+        case OPER_STATUS.new:
+          sstatus='新任务'
           break
-        case 3:
-          pstatus='success'
+        case OPER_STATUS.complete:
           sstatus='已完成'
           break
+        case OPER_STATUS.implement:
+          sstatus='进行中'
+          break
         default:
-          pstatus='exception'
-          sstatus='出错了'
+          sstatus='进行中'
       }
+      switch(implStatus){
+        case IMPL_STATUS.wrong:
+          pstatus='exception'
+          break
+        case IMPL_STATUS.normal:
+          pstatus='normal'
+          break
+        case IMPL_STATUS.complete:
+          pstatus='success'
+          break
+        default:
+        pstatus='exception'
+      }
+
       return(
       <div className={styles.listContent}>
         <div className={styles.listContentItem}>
@@ -252,19 +269,22 @@ class TaskList extends PureComponent {
                   item.description=`用户${item.user}有点懒，什么描述都没添加。`
                 let actionOption=item.user==localStorage.getItem('currentUser')?
                 <div style={{width:100}}>
-                    {item.status!=2?
+                    {item.operStatus!=OPER_STATUS.implement?
                     <FaPlayCircle 
                       style={{fontSize:playBtnOutLook(index).size,color:playBtnOutLook(index).color}}
                       onMouseEnter={()=> this.setState( {mouseOverPlayBtnIndex:index})}                      
                       onMouseLeave={()=> this.setState( {mouseOverPlayBtnIndex:-1})}
                       onClick={()=>{
-                        if(item.status==0){
+                        
+                        if(item.operStatus==OPER_STATUS.new){
                           this.setState({modalVisible:true,selectedTask:{id:item._id,targetList:item.targetList}})
                           dispatch({type:'node/get'})
                         }
-                        else if (item.status==1){
+                        else if (item.operStatus==OPER_STATUS.paused){
                           dispatch({type:'task/resume',taskId:item._id})
                         }
+                        else
+                        message.warning('任务已经完成！')
                     }}
                       />:
                     <FaPauseCircle 
