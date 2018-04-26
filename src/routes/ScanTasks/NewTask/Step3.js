@@ -38,7 +38,11 @@ class Step3 extends React.PureComponent {
       let choosedpluginList=[];
       for(var item of pluginList){
         if(item.checked)
-          choosedpluginList.push(item.name)
+          choosedpluginList.push({
+            name:item.name,
+            port:item.port,
+            protocal:item.protocal
+          })
       }
       dispatch({
         type: 'task/add',
@@ -63,13 +67,17 @@ class Step3 extends React.PureComponent {
          onChange={(e)=>{dispatch({type:'plugin/checkedAll',checked:e.target.checked})}}
        ><strong style={{fontSize:16,color:'dodgerblue'}}>全选</strong></Checkbox>
        <Row gutter={8} style={{ marginBottom: 8 }}>
-         {pluginList.map((v,k)=>(
+         {pluginList.map((v,k)=>{
+           let disabled=false
+           if(v.protocal==''||v.port=='')
+              disabled=true
+           return (
            <Col span={12} key={k}>
            <Card style={{ marginTop: 16 }}>
-               <Checkbox checked={v.checked} onClick={()=>{dispatch({type:'plugin/checkedOne',index:k})}}><strong style={{fontSize:16}}>{v.name}</strong></Checkbox>
+               <Checkbox disabled={disabled} checked={v.checked} onClick={()=>{dispatch({type:'plugin/checkedOne',index:k})}}><strong style={{fontSize:16}}>{v.name}</strong></Checkbox>
            </Card>
            </Col>
-         )
+         )}
  
          )}
  

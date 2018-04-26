@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
 import index, { connect } from 'dva';
-import { Modal,message,Upload,List, Card, Row, Col, Radio, Input, Progress, Button, Icon, Dropdown, Menu, Avatar } from 'antd';
+import { Form,Modal,Checkbox,message,Upload,List, Card, Row, Col, Radio, Input, Progress, Button, Icon, Dropdown, Menu, Avatar } from 'antd';
 import {FaEdit,FaTrashO} from 'react-icons/lib/fa'
 import crypto from 'crypto'
 import Identicon from 'identicon.js'
@@ -11,12 +11,14 @@ import styles from './style.less';
 const Dragger = Upload.Dragger;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const { TextArea } = Input;
 const { Search } = Input;
-
+const FormItem = Form.Item;
 @connect(({ plugin, loading }) => ({
   pluginList:plugin.pluginList,
   loading: loading.effects['plugin/get']
 }))
+@Form.create()
 export default class PluginList extends PureComponent {
   componentDidMount() {
     this.props.dispatch({
@@ -28,10 +30,13 @@ export default class PluginList extends PureComponent {
   }
   state={
     mouseOverEditBtnIndex:-1,
-    mouseOverDelBtnIndex:-1
+    mouseOverDelBtnIndex:-1,
+    modalVisible:false,
+    selectedPlugin:{},
   }
   render() {
     const { pluginList, loading,dispatch } = this.props;
+    const { getFieldDecorator, getFieldValue,resetFields } = this.props.form;
 
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
@@ -40,7 +45,44 @@ export default class PluginList extends PureComponent {
         {bordered && <em />}
       </div>
     );
+    const onModalOk=()=>{
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        if(!err){
+          console.log(values)
+          dispatch({
+            type:'plugin/update',
+            payload:{
+              name:this.state.selectedPlugin.name,
+              update:values
+            }
+          })
+          resetFields()
+          this.setState({
+            modalVisible:false,
+          })
+        }
+      })
+    }
 
+    const onModalCancel=()=>{
+      this.setState({
+        modalVisible:false,
+      })
+      resetFields()
+     
+    }
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 7 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 },
+        md: { span: 10 },
+      },
+    };
     const editBtnOutLook=(index)=>index==this.state.mouseOverEditBtnIndex?
           {
             size:28,
@@ -83,8 +125,11 @@ export default class PluginList extends PureComponent {
       total: 50,
     };
 
-    const ListContent = ({ data: { user, usedCount,uploadAt, }}) => {
-
+    const ListContent = ({ data: { user, port,protocal,uploadAt, }}) => {
+      if(port=='')
+        port='请完善'
+      if(protocal=='')
+        protocal='请完善'
       return(
       <div className={styles.listContent}>
         <div className={styles.listContentItem}>
@@ -93,8 +138,12 @@ export default class PluginList extends PureComponent {
         </div>
         
         <div className={styles.listContentItem}>
-          <span>使用次数</span>
-          <p>{usedCount}</p>
+          <span>所用端口</span>
+          <p>{port}</p>
+        </div>
+        <div className={styles.listContentItem}>
+          <span>TCP/UDP</span>
+          <p>{protocal}</p>
         </div>
         
         <div className={styles.listContentItem}>
@@ -147,14 +196,68 @@ export default class PluginList extends PureComponent {
     return (
       <PageHeaderLayout title="插件管理" content="本工具只支持python所写的插件。">
         <div className={styles.standardList} style={{marginLeft:30,marginRight:30}}>
-          
+        <Modal
+          title={`编辑插件信息-->${this.state.selectedPlugin.name}`}
+          visible={this.state.modalVisible}
+          onOk={onModalOk}
+          onCancel={onModalCancel}
+          maskClosable={false}>
+          <Form
+            hideRequiredMark
+            style={{ marginTop: 8 }}
+          >
+            
+            
+            <FormItem
+              {...formItemLayout}
+              label="插件描述"
+            >
+              {getFieldDecorator('description', {initialValue:this.state.selectedPlugin.description,})(
+                <TextArea style={{ minHeight: 16 }} placeholder="可不填，插件的简单描述。" rows={4} />
+              )}
+            </FormItem>
+            
+            <FormItem
+              {...formItemLayout}
+              label="使用协议"
+            >
+              <div>
+                {getFieldDecorator('protocal', {
+                  initialValue:this.state.selectedPlugin.protocal,
+                  rules: [{
+                    required: true, message: '请选择协议',
+                  }],
+                })(
+                  <Radio.Group>
+                    <RadioButton value='TCP'>TCP</RadioButton>
+                    <RadioButton value='UDP'>UDP</RadioButton>
+                  </Radio.Group>
+                )}
+              </div>
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="使用端口"
+            >
+              {getFieldDecorator('port', {
+                rules: [{
+                  required: true, message: '请输入端口号',
+                }],
+                initialValue:this.state.selectedPlugin.port,
+              })(
+                <Input placeholder="必填项，插件使用的端品号" />
+              )}
+            </FormItem>
+            
+          </Form>
+        </Modal>
         <Dragger {...props}>
               <p className="ant-upload-drag-icon">
                 <Icon type="inbox" />
               </p>
               <p className="ant-upload-text">添加新插件</p>
               <p className="ant-upload-hint">点击选择插件或者直接将插件文件拖拽入框内，支持多选。请注意不要与已有插件同名！</p>
-              <p className="ant-upload-hint">插件的描述可在添加完毕后点击编辑图标修改。</p>
+              <p className="ant-upload-hint"><strong>插件上传后必须点击编辑图标完善端口信息和协议信息，否则无法使用！。</strong></p>
             </Dragger>
           <Card
             className={styles.listCard}
@@ -177,8 +280,9 @@ export default class PluginList extends PureComponent {
                 hash.update(item.name); // 传入用户名
                 let imgData = new Identicon(hash.digest('hex')).toString()
                 let imgUrl = 'data:image/png;base64,'+imgData
-                if(item.des=='')
-                    item.des='用户尚未更新描述。'
+                let description=item.description
+                if(item.description=='')
+                    description='用户尚未更新描述。'
                 return (
                 <List.Item
                 // onMouseLeave={()=>this.setState({mouseOver:false})}
@@ -189,6 +293,7 @@ export default class PluginList extends PureComponent {
                       style={{fontSize: editBtnOutLook(index).size,color: editBtnOutLook(index).color,marginTop:6}}
                       onMouseEnter={()=> this.setState( {mouseOverEditBtnIndex:index})}                      
                       onMouseLeave={()=> this.setState( {mouseOverEditBtnIndex:-1})}
+                      onClick={()=>this.setState({modalVisible:true,selectedPlugin:item})}
                     />
                     <FaTrashO 
                       style={{fontSize:delBtnOutLook(index).size,color:delBtnOutLook(index).color}}
@@ -201,7 +306,7 @@ export default class PluginList extends PureComponent {
                   <List.Item.Meta
                     avatar={<Avatar src={imgUrl} shape="square" size="small" />}
                     title={item.name}
-                    description={item.des}
+                    description={description}
                   />
                   <ListContent data={item}/>
                 </List.Item>

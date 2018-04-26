@@ -25,6 +25,17 @@ export default {
         pluginList: response,
       });
     }, 
+    
+    *update({payload}, { call, put }) {
+      const re =yield call(plugin.update,payload);
+      re=='ok'?message.success('更新插件成功'):message.warning('更新插件失败')
+      const response = yield call(plugin.get);
+      yield put({
+        type: 'getSuccess',
+        pluginList: response,
+      });
+    }, 
+
   },
 
   reducers: {
@@ -40,6 +51,8 @@ export default {
     checkedAll(state,{checked}){
         let num=checked?state.pluginList.length:0
         for(var item of state.pluginList){
+          if(item.protocal==''||item.port=='')
+              continue
             item.checked=checked
         }
         

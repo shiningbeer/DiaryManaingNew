@@ -29,7 +29,7 @@ class Step4 extends React.PureComponent {
         </Row>
         <Row>
           <Col span={8} className={styles.label}>使用插件：</Col>
-          <Col span={16}>{newTask.pluginList.map((v,k)=>(`${v};`))}</Col>
+          <Col span={16}>{newTask.pluginList.map((v,k)=>(`${v.name};`))}</Col>
         </Row>
       </div>
     );

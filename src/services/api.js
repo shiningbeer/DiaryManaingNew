@@ -64,6 +64,11 @@ export const plugin={
     method: 'POST',
     body:params
   }),
+  update:async (params)=>request(urlbase+'/plugin/update', {
+    method: 'POST',
+    body:params
+  }),
+  
   
 }
 export const node={

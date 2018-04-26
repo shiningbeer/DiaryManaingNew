@@ -137,15 +137,16 @@ class TaskList extends PureComponent {
     
     const OPER_STATUS = {
       new: 0,
-      complete:1,
-      implement: 2,
-      paused:-1,
+      implement:1,
+      paused:2,
+      complete:3,
+      deleted:-1,
     }
-  const IMPL_STATUS={
-    wrong:-1,
-    complete:1,
-    normal:0
-  }    
+    const IMPL_STATUS={
+      wrong:-1,  
+      normal:0,
+      complete:1,
+    }
     const ListContent = ({ data: { user, createdAt, percent, operStatus,implStatus }}) => {
       let pstatus,sstatus
       switch(operStatus){
@@ -277,7 +278,7 @@ class TaskList extends PureComponent {
                       onClick={()=>{
                         
                         if(item.operStatus==OPER_STATUS.new){
-                          this.setState({modalVisible:true,selectedTask:{id:item._id,targetList:item.targetList}})
+                          this.setState({modalVisible:true,selectedTask:{id:item._id,targetList:item.targetList,pluginList:item.pluginList}})
                           dispatch({type:'node/get'})
                         }
                         else if (item.operStatus==OPER_STATUS.paused){
