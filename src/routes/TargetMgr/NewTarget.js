@@ -17,9 +17,9 @@ const { TextArea } = Input;
 export default class BasicForms extends PureComponent {
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      values.ipRange=values.ipRange.split('\n')      
-      if (!err) {
+    this.props.form.validateFieldsAndScroll((err, values) => {      
+      if (!err) {        
+        values.ipRange=values.ipRange.split('\n')      
         this.props.dispatch({
           type: 'target/add',
           payload: values,
@@ -52,7 +52,7 @@ export default class BasicForms extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="新建目标" content="目标是IP列表集合，供发布任务时选用。每一行为一个ip段，格式必须形如：192.168.4.1-192.168.255.255">
+      <PageHeaderLayout title="新建目标" content="目标是IP列表集合，供发布任务时选用。每一行为一个ip段，格式必须为CSDR格式，形如：192.168.4.0/12">
         <Card bordered={false}>
           <Form
             onSubmit={this.handleSubmit}
@@ -90,7 +90,7 @@ export default class BasicForms extends PureComponent {
                   required: true, message: '请输入IP范围',
                 }],
               })(
-                <TextArea style={{ minHeight: 64 }} placeholder="必填项，每一行为一个ip段，格式必须形如：192.168.4.1-192.168.255.255" rows={16} />
+                <TextArea style={{ minHeight: 64 }} placeholder="必填项，每一行为一个ip段，格式必须为CSDR格式，形如：192.168.4.0/12" rows={16} />
               )}
             </FormItem>
             
