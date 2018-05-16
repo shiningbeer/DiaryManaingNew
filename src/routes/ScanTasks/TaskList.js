@@ -168,12 +168,14 @@ class TaskList extends PureComponent {
       switch(implStatus){
         case IMPL_STATUS.wrong:
           pstatus='exception'
+          sstatus='出错了'
           break
         case IMPL_STATUS.normal:
           pstatus='normal'
           break
         case IMPL_STATUS.complete:
           pstatus='success'
+          sstatus='已完成'
           break
         default:
         pstatus='exception'
@@ -191,7 +193,7 @@ class TaskList extends PureComponent {
           <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
         </div>
         <div className={styles.listContentItem}>
-          <Progress percent={percent} status={pstatus} strokeWidth={6} style={{ width: 120 }} />
+          <Progress percent={percent.toFixed(1)} status={pstatus} strokeWidth={6} style={{ width: 120 }} />
         </div>
         <div className={styles.listContentItem}>
           <span>状态</span>
