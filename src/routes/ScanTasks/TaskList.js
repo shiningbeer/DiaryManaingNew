@@ -149,6 +149,7 @@ class TaskList extends PureComponent {
     }
     const ListContent = ({ data: { user, createdAt, percent, operStatus,implStatus }}) => {
       let pstatus,sstatus
+      console.log(percent)
       switch(operStatus){
         case OPER_STATUS.paused:
           sstatus='暂停中'
@@ -193,7 +194,7 @@ class TaskList extends PureComponent {
           <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
         </div>
         <div className={styles.listContentItem}>
-          <Progress percent={percent.toFixed(1)} status={pstatus} strokeWidth={6} style={{ width: 120 }} />
+          <Progress percent={parseFloat(percent.toFixed(1))} status={pstatus} strokeWidth={6} style={{ width: 120 }} />
         </div>
         <div className={styles.listContentItem}>
           <span>状态</span>
@@ -280,7 +281,7 @@ class TaskList extends PureComponent {
                       onClick={()=>{
                         
                         if(item.operStatus==OPER_STATUS.new){
-                          this.setState({modalVisible:true,selectedTask:{id:item._id,targetList:item.targetList,pluginList:item.pluginList}})
+                          this.setState({modalVisible:true,selectedTask:{id:item._id,targetList:item.targetList,plugin:item.plugin}})
                           dispatch({type:'node/get'})
                         }
                         else if (item.operStatus==OPER_STATUS.paused){
@@ -318,7 +319,7 @@ class TaskList extends PureComponent {
                 return (
                 <List.Item
                 // onMouseLeave={()=>this.setState({mouseOver:false})}
-                  actions={[<a>详细</a>, actionOption]}
+                  actions={[<a href={`/#/task/taskdetail/${item._id}`}>详细</a>, actionOption]}
                 >
                   <List.Item.Meta
                     avatar={<Avatar src={imgUrl} shape="circle" size="small" />}

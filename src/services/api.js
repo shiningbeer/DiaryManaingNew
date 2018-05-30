@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import fetch from 'dva/fetch';
 import request from '../utils/request';
-const urlbase='http://localhost:1978'
+const urlbase='http://173.199.118.9:1978'
 var myRequest = (url, option) => {
     let newOption={
         ...option,
@@ -124,6 +124,18 @@ export const task={
   //mock:'/api/task/get'
   //real:urlbase+'/task/get'
   get:async (params)=>request(urlbase+'/task/get', {
+    method: 'POST',
+    body:params
+  }),
+  getDetail:async (params)=>request(urlbase+'/task/getdetail', {
+    method: 'POST',
+    body:params
+  }),
+  getNodeTasks:async (params)=>request(urlbase+'/task/getNodeTasks', {
+    method: 'POST',
+    body:params
+  }),
+  getResult:async (params)=>request(urlbase+'/task/nodeTaskResult', {
     method: 'POST',
     body:params
   }),

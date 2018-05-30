@@ -12,7 +12,10 @@ export default {
       targetList:[],
       pluginList: [],
     },
-    taskList:[]
+    taskList:[],
+    taskDetail:{},
+    nodeTasks:[],
+    nodeTaskResult:[]
   },
  
   effects: {
@@ -31,6 +34,27 @@ export default {
       yield put({
         type: 'getTaskList',
         taskList:result
+      });
+    },
+    *getDetail({ payload }, { put,call }){
+      const result= yield call(task.getDetail, payload);
+      yield put({
+        type: 'getTaskDetail',
+        taskDetail:result
+      });
+    },
+    *getNodeTasks({ payload }, { put,call }){
+      const result= yield call(task.getNodeTasks, payload);
+      yield put({
+        type: 'getTaskNodeTasks',
+        nodeTasks:result
+      });
+    },
+    *getNodeTaskResult({ payload }, { put,call }){
+      const result= yield call(task.getResult, payload);
+      yield put({
+        type: 'getResult',
+        nodeTaskResult:result
       });
     },
     *del({payload}, { call, put }) {
@@ -66,7 +90,6 @@ export default {
       });
     }, 
 
-    
   },
 
   reducers: {
@@ -84,6 +107,24 @@ export default {
         ...state,
         taskList,
       };
-    }
+    },
+    getTaskDetail(state,{taskDetail}){
+      return {
+        ...state,
+        taskDetail,
+      };
+    },
+    getTaskNodeTasks(state,{nodeTasks}){
+      return {
+        ...state,
+        nodeTasks,
+      };
+    },
+    getResult(state,{nodeTaskResult}){
+      return {
+        ...state,
+        nodeTaskResult,
+      };
+    },
   },
 };

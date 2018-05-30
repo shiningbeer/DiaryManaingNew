@@ -91,6 +91,10 @@ export const getRouterData = (app) => {
     '/task/tasklist': {
       component: dynamicWrapper(app, ['task','node'], () => import('../routes/ScanTasks/TaskList')),
     },
+    '/task/taskdetail/:id': {
+      component: dynamicWrapper(app, ['task','node'], () => import('../routes/ScanTasks/TaskDetail')),
+    },
+
     '/target/newtarget': {
       component: dynamicWrapper(app, [], () => import('../routes/TargetMgr/NewTarget')),
     },
